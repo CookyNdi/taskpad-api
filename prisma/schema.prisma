@@ -11,9 +11,59 @@ datasource db {
 }
 
 model Users {
-  id String @id @default(cuid())
-  username String
-  password String
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  image_url String
+  token     String
   createdAt DateTime @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
+}
+
+model Projects {
+  id                 String               @id @default(uuid())
+  user_id            String
+  status_id          Int
+  name               String
+  description        String?
+  priority           String
+  deadline           String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  status             Status               @relation(fields: [status_id], references: [id], onDelete: NoAction)
+  Task               Task[]
+  Project_Categories Project_Categories[]
+}
+
+model Status {
+  id       Int        @id @default(autoincrement())
+  title    String
+  Projects Projects[]
+}
+
+model Task {
+  id         String   @id @default(cuid())
+  project_id String
+  title      String
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+}
+
+model Project_Categories {
+  project_id  String
+  category_id Int
+  projects    Projects   @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  categories  Categories @relation(fields: [category_id], references: [id], onDelete: NoAction)
+
+  @@id([project_id, category_id])
+}
+
+model Categories {
+  id                 Int                  @id @default(autoincrement())
+  title              String
+  color              String
+  Project_Categories Project_Categories[]
 }
