@@ -73,7 +73,15 @@ export const userRegistration = async (req: Request, res: Response, next: NextFu
       return res.status(400).json(passwordCheckResult)
     }
     const hashedPassword = await argon2.hash(password)
-    await prisma.users.create({ data: { username, email, password: hashedPassword, image_url: '', token: '' } })
+    await prisma.users.create({
+      data: {
+        username,
+        email,
+        password: hashedPassword,
+        image_url: 'http://localhost:5000/images/profile-images/default.jpg',
+        token: ''
+      }
+    })
     res.status(200).json({ msg: 'User registered successfully' })
   } catch (error: any) {
     res.status(500).json(error.message)
