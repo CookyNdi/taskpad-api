@@ -1,12 +1,18 @@
 import jwt, { type JwtPayload } from 'jsonwebtoken'
 
-export const createAccessToken = (payload: string): string => {
+export const createAccessToken = (userId: string): string => {
   const JWT_SCRET_ACCESS: string = process.env.JWT_SCRET_ACCESS ?? ''
+  const payload = {
+    id: userId
+  }
   return jwt.sign(payload, JWT_SCRET_ACCESS, { expiresIn: '1200s' })
 }
 
-export const createRefreshToken = (payload: string): string => {
+export const createRefreshToken = (userId: string): string => {
   const JWT_SCRET_REFRESH: string = process.env.JWT_SCRET_REFRESH ?? ''
+  const payload = {
+    id: userId
+  }
   return jwt.sign(payload, JWT_SCRET_REFRESH, { expiresIn: '7d' })
 }
 

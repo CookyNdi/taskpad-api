@@ -7,10 +7,15 @@ import fs from 'fs'
 import type fileUpload from 'express-fileupload'
 import { passwordCheck, emailCheck, usernameCheck } from '../helpers/Utils'
 import type { MvFunction } from '../helpers/main.type'
+import { createAccessToken, createRefreshToken } from '../helpers/jwtConfig'
 
 const prisma = new PrismaClient()
+interface CustomRequest extends Request {
+  userId: string
+  email: string
+}
 
-export const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const getUsers = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const users = await prisma.users.findMany({
       select: {
@@ -274,6 +279,47 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
       return res.status(404).json({ message: 'User not found' })
     }
     res.status(200).json({ msg: 'Account deleted successfully' })
+  } catch (error: any) {
+    res.status(500).json({ msg: error.message })
+  }
+}
+
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  try {
+    const {
+      username,
+      password
+    }: {
+      username: string
+      password: string
+    } = req.body
+    const user = await prisma.users.findUnique({ where: { username } })
+    if (user == null) {
+      return res.status(404).json({ msg: 'Username not registered' })
+    }
+    const passwordMatch = await argon2.verify(user.password, password)
+    if (!passwordMatch) {
+      return res.status(400).json({ msg: 'Incorrect password' })
+    }
+    const accessToken = createAccessToken(user.id)
+    const refreshToken = createRefreshToken(user.id)
+    // Atur cookie access token
+    res.cookie('access_token', accessToken, {
+      maxAge: 1200,
+      httpOnly: true
+      // secure: true, // Hanya akan dikirim melalui HTTPS jika true
+      // sameSite: "strict", // Atur ke 'lax' atau 'none' sesuai kebutuhan
+    })
+
+    // Atur cookie refresh token
+    res.cookie('refresh_token', refreshToken, {
+      maxAge: 604800000,
+      httpOnly: true
+      // secure: true,
+      // sameSite: "strict",
+    })
+
+    res.status(200).json({ msg: 'Login Successfully' })
   } catch (error: any) {
     res.status(500).json({ msg: error.message })
   }
