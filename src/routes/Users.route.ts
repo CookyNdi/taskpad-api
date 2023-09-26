@@ -3,6 +3,7 @@ import {
   deleteUser,
   getUserById,
   getUsers,
+  updateProfileImages,
   updateUserEmail,
   updateUserPassword,
   updateUsername,
@@ -19,6 +20,7 @@ route.post('/api/registration', userRegistration as unknown as any)
 route.patch('/api/users/edit/username/:id', updateUsername as unknown as any)
 route.patch('/api/users/edit/email/:id', updateUserEmail as unknown as any)
 route.patch('/api/users/edit/password/:id', updateUserPassword as unknown as any)
+route.patch('/api/users/edit/image/:id', updateProfileImages as unknown as any)
 
 route.delete('/api/users/delete/:id', deleteUser as unknown as any)
 
