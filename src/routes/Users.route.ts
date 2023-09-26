@@ -9,10 +9,11 @@ import {
   updateUsername,
   userRegistration
 } from '../controllers/Users.controllers'
+import { authentication } from '../helpers/middleware'
 
 const route = express.Router()
 
-route.get('/api/users', getUsers as unknown as any)
+route.get('/api/users', authentication as unknown as any, getUsers as unknown as any)
 route.get('/api/users/:id', getUserById as unknown as any)
 
 route.post('/api/registration', userRegistration as unknown as any)

@@ -3,8 +3,12 @@ import { type Request, type Response, type NextFunction } from 'express'
 import { verifyAccessToken } from './jwtConfig'
 
 const prisma = new PrismaClient()
+interface CustomRequest extends Request {
+  userId: string
+  email: string
+}
 
-export const authentication = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const authentication = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   const accessTokenBearer: string | null = req.header('Authorization') ?? null
   const accessToken = accessTokenBearer?.replace(/^Bearer /, '')
   if (accessToken == null) {
@@ -22,6 +26,8 @@ export const authentication = async (req: Request, res: Response, next: NextFunc
     if (user == null) {
       return res.status(404).json({ msg: 'User Not Found' })
     }
+    req.userId = user.id
+    req.email = user.email
     next()
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
