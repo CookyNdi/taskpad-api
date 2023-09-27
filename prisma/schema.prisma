@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Users {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
+  id        String     @id @default(cuid())
+  username  String     @unique
+  email     String     @unique
   password  String
   image_url String
   token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Projects  Projects[]
 }
 
 model Projects {
@@ -26,11 +27,12 @@ model Projects {
   user_id            String
   status_id          Int
   name               String
-  description        String?
+  description        String
   priority           String
   deadline           String
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
+  user               Users                @relation(fields: [user_id], references: [id], onDelete: Cascade)
   status             Status               @relation(fields: [status_id], references: [id], onDelete: NoAction)
   Task               Task[]
   Project_Categories Project_Categories[]
