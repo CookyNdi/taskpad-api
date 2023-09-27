@@ -33,10 +33,10 @@ export const getUsers = async (req: CustomRequest, res: Response, next: NextFunc
   }
 }
 
-export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const getUserById = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const users = await prisma.users.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.userId },
       select: {
         id: true,
         username: true,
@@ -52,7 +52,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export const userRegistration = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const userRegistration = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       username,
@@ -93,7 +93,7 @@ export const userRegistration = async (req: Request, res: Response, next: NextFu
   }
 }
 
-export const updateUsername = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateUsername = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       username,
@@ -106,7 +106,7 @@ export const updateUsername = async (req: Request, res: Response, next: NextFunc
       id: string
       password: string
     } = await prisma.users.findUnique({
-      where: { id: req.params.id }
+      where: { id: req.userId }
     })
     if (user == null) {
       return res.status(404).json({ msg: 'User not found' })
@@ -132,7 +132,7 @@ export const updateUsername = async (req: Request, res: Response, next: NextFunc
   }
 }
 
-export const updateUserEmail = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateUserEmail = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       email,
@@ -144,7 +144,7 @@ export const updateUserEmail = async (req: Request, res: Response, next: NextFun
     const user: null | {
       id: string
       password: string
-    } = await prisma.users.findUnique({ where: { id: req.params.id } })
+    } = await prisma.users.findUnique({ where: { id: req.userId } })
     if (user == null) {
       return res.status(404).json({ msg: 'User not found' })
     }
@@ -169,7 +169,7 @@ export const updateUserEmail = async (req: Request, res: Response, next: NextFun
   }
 }
 
-export const updateUserPassword = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateUserPassword = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       password,
@@ -183,7 +183,7 @@ export const updateUserPassword = async (req: Request, res: Response, next: Next
     const user: null | {
       id: string
       password: string
-    } = await prisma.users.findUnique({ where: { id: req.params.id } })
+    } = await prisma.users.findUnique({ where: { id: req.userId } })
     if (user == null) {
       return res.status(404).json({ msg: 'User not found' })
     }
@@ -209,12 +209,12 @@ export const updateUserPassword = async (req: Request, res: Response, next: Next
   }
 }
 
-export const updateProfileImages = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateProfileImages = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const user: null | {
       id: string
       image_url: string
-    } = await prisma.users.findUnique({ where: { id: req.params.id } })
+    } = await prisma.users.findUnique({ where: { id: req.userId } })
     if (user == null) return res.status(404).json({ msg: 'User not found' })
     const file:
       | fileUpload.UploadedFile
@@ -270,10 +270,10 @@ export const updateProfileImages = async (req: Request, res: Response, next: Nex
   }
 }
 
-export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const deleteUser = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const user = await prisma.users.delete({
-      where: { id: req.params.id }
+      where: { id: req.userId }
     })
     if (user == null) {
       return res.status(404).json({ message: 'User not found' })
@@ -284,7 +284,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
   }
 }
 
-export const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const login = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       username,
@@ -325,7 +325,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
-export const token = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const token = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   const refreshToken: string | null = req.cookies.refresh_token
   console.log(refreshToken)
   if (refreshToken == null) {
