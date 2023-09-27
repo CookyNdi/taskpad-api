@@ -342,3 +342,9 @@ export const token = async (req: CustomRequest, res: Response, next: NextFunctio
   }
   res.status(200).json({ msg: 'Token Renewed' })
 }
+
+export const logout = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
+  res.cookie('access_token', '', { expires: new Date(0) })
+  res.cookie('refresh_token', '', { expires: new Date(0) })
+  res.status(200).json({ msg: 'Logouted' })
+}
