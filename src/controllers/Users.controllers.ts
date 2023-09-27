@@ -7,7 +7,8 @@ import fs from 'fs'
 import type fileUpload from 'express-fileupload'
 import { passwordCheck, emailCheck, usernameCheck } from '../helpers/Utils'
 import type { MvFunction } from '../helpers/main.type'
-import { createAccessToken, createRefreshToken } from '../helpers/jwtConfig'
+import { createAccessToken, createRefreshToken, verifyRefreshToken } from '../helpers/jwtConfig'
+
 
 const prisma = new PrismaClient()
 interface CustomRequest extends Request {
@@ -33,10 +34,10 @@ export const getUsers = async (req: CustomRequest, res: Response, next: NextFunc
   }
 }
 
-export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const getUserById = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const users = await prisma.users.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.userId },
       select: {
         id: true,
         username: true,
@@ -52,7 +53,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export const userRegistration = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const userRegistration = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       username,
@@ -93,7 +94,7 @@ export const userRegistration = async (req: Request, res: Response, next: NextFu
   }
 }
 
-export const updateUsername = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateUsername = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       username,
@@ -106,7 +107,7 @@ export const updateUsername = async (req: Request, res: Response, next: NextFunc
       id: string
       password: string
     } = await prisma.users.findUnique({
-      where: { id: req.params.id }
+      where: { id: req.userId }
     })
     if (user == null) {
       return res.status(404).json({ msg: 'User not found' })
@@ -132,7 +133,7 @@ export const updateUsername = async (req: Request, res: Response, next: NextFunc
   }
 }
 
-export const updateUserEmail = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateUserEmail = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       email,
@@ -144,7 +145,7 @@ export const updateUserEmail = async (req: Request, res: Response, next: NextFun
     const user: null | {
       id: string
       password: string
-    } = await prisma.users.findUnique({ where: { id: req.params.id } })
+    } = await prisma.users.findUnique({ where: { id: req.userId } })
     if (user == null) {
       return res.status(404).json({ msg: 'User not found' })
     }
@@ -169,7 +170,7 @@ export const updateUserEmail = async (req: Request, res: Response, next: NextFun
   }
 }
 
-export const updateUserPassword = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const updateUserPassword = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       password,
@@ -183,7 +184,7 @@ export const updateUserPassword = async (req: Request, res: Response, next: Next
     const user: null | {
       id: string
       password: string
-    } = await prisma.users.findUnique({ where: { id: req.params.id } })
+    } = await prisma.users.findUnique({ where: { id: req.userId } })
     if (user == null) {
       return res.status(404).json({ msg: 'User not found' })
     }
@@ -209,12 +210,13 @@ export const updateUserPassword = async (req: Request, res: Response, next: Next
   }
 }
 
-export const updateProfileImages = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+
+export const updateProfileImages = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const user: null | {
       id: string
       image_url: string
-    } = await prisma.users.findUnique({ where: { id: req.params.id } })
+    } = await prisma.users.findUnique({ where: { id: req.userId } })
     if (user == null) return res.status(404).json({ msg: 'User not found' })
     const file:
       | fileUpload.UploadedFile
@@ -270,10 +272,11 @@ export const updateProfileImages = async (req: Request, res: Response, next: Nex
   }
 }
 
-export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+
+export const deleteUser = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const user = await prisma.users.delete({
-      where: { id: req.params.id }
+      where: { id: req.userId }
     })
     if (user == null) {
       return res.status(404).json({ message: 'User not found' })
@@ -284,7 +287,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
   }
 }
 
-export const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const login = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
       username,
@@ -323,4 +326,28 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   } catch (error: any) {
     res.status(500).json({ msg: error.message })
   }
+}
+
+export const token = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
+  const refreshToken: string | null = req.cookies.refresh_token
+  console.log(refreshToken)
+  if (refreshToken == null) {
+    return res.status(401).json({ msg: 'Please Login First!!' })
+  }
+  const accessToken = verifyRefreshToken(refreshToken)
+  if (accessToken.valid) {
+    res.cookie('access_token', accessToken.message, {
+      maxAge: 1200,
+      httpOnly: true
+    })
+  } else {
+    console.log(accessToken.message)
+  }
+  res.status(200).json({ msg: 'Token Renewed' })
+}
+
+export const logout = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
+  res.cookie('access_token', '', { expires: new Date(0) })
+  res.cookie('refresh_token', '', { expires: new Date(0) })
+  res.status(200).json({ msg: 'Logouted' })
 }
