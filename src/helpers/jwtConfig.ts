@@ -1,19 +1,19 @@
 import jwt, { type JwtPayload } from 'jsonwebtoken'
 
 export const createAccessToken = (userId: string): string => {
-  const JWT_SCRET_ACCESS: string = process.env.JWT_SCRET_ACCESS ?? ''
+  const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? ''
   const payload = {
     id: userId
   }
-  return jwt.sign(payload, JWT_SCRET_ACCESS, { expiresIn: '1200s' })
+  return jwt.sign(payload, JWT_SECRET_ACCESS, { expiresIn: '1200s' })
 }
 
 export const createRefreshToken = (userId: string): string => {
-  const JWT_SCRET_REFRESH: string = process.env.JWT_SCRET_REFRESH ?? ''
+  const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? ''
   const payload = {
     id: userId
   }
-  return jwt.sign(payload, JWT_SCRET_REFRESH, { expiresIn: '7d' })
+  return jwt.sign(payload, JWT_SECRET_REFRESH, { expiresIn: '7d' })
 }
 
 export const verifyAccessToken = (
@@ -24,8 +24,8 @@ export const verifyAccessToken = (
 } => {
   const validationResult = { valid: true, message: '' }
   try {
-    const JWT_SCRET_ACCESS: string = process.env.JWT_SCRET_ACCESS ?? ''
-    const decodedToken: string | JwtPayload = jwt.verify(token, JWT_SCRET_ACCESS)
+    const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? ''
+    const decodedToken: string | JwtPayload = jwt.verify(token, JWT_SECRET_ACCESS)
     validationResult.valid = true
     validationResult.message = (decodedToken as JwtPayload).id
   } catch (err: any) {
@@ -40,16 +40,25 @@ export const verifyAccessToken = (
   return validationResult
 }
 
-export const verifyRefreshToken = (refreshToken: string): object => {
+export const verifyRefreshToken = (
+  refreshToken: string
+): {
+  valid: boolean
+  message: string
+} => {
+  const validationResult = { valid: true, message: '' }
   try {
-    const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET ?? ''
+    const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? ''
     const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? ''
 
-    const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET)
+    const decoded = jwt.verify(refreshToken, JWT_SECRET_REFRESH)
     const payload = { id: (decoded as JwtPayload).id }
     const accessToken = jwt.sign(payload, JWT_SECRET_ACCESS, { expiresIn: '1200s' })
-    return { accessToken }
+    validationResult.valid = true
+    validationResult.message = accessToken
   } catch (error: any) {
-    return { error: error.message }
+    validationResult.valid = false
+    validationResult.message = error.message
   }
+  return validationResult
 }

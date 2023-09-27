@@ -7,7 +7,7 @@ import fs from 'fs'
 import type fileUpload from 'express-fileupload'
 import { passwordCheck, emailCheck, usernameCheck } from '../helpers/Utils'
 import type { MvFunction } from '../helpers/main.type'
-import { createAccessToken, createRefreshToken } from '../helpers/jwtConfig'
+import { createAccessToken, createRefreshToken, verifyRefreshToken } from '../helpers/jwtConfig'
 
 const prisma = new PrismaClient()
 interface CustomRequest extends Request {
@@ -323,4 +323,22 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   } catch (error: any) {
     res.status(500).json({ msg: error.message })
   }
+}
+
+export const token = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  const refreshToken: string | null = req.cookies.refresh_token
+  console.log(refreshToken)
+  if (refreshToken == null) {
+    return res.status(401).json({ msg: 'Please Login First!!' })
+  }
+  const accessToken = verifyRefreshToken(refreshToken)
+  if (accessToken.valid) {
+    res.cookie('access_token', accessToken.message, {
+      maxAge: 1200,
+      httpOnly: true
+    })
+  } else {
+    console.log(accessToken.message)
+  }
+  res.status(200).json({ msg: 'Token Renewed' })
 }
