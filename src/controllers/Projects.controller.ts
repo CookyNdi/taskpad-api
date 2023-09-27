@@ -9,8 +9,9 @@ interface CustomRequest extends Request {
 
 export const getProjects = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const users = await prisma.projects.findMany({ where: { user_id: req.userId } })
-    res.status(200).json(users)
+    const projects = await prisma.projects.findMany({ where: { user_id: req.userId } })
+    const categories = await prisma.project_Categories.findMany({ where: { project_id: req.projectId } })
+    res.status(200).json({ project: projects, category: categories })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
@@ -27,7 +28,8 @@ export const getProjectById = async (req: CustomRequest, res: Response, next: Ne
     if (project == null) {
       res.status(404).json({ message: 'Project not found' })
     } else {
-      res.status(200).json(project)
+      const categories = await prisma.project_Categories.findMany({ where: { project_id: req.projectId } })
+      res.status(200).json({ project, category: categories })
     }
   } catch (error: any) {
     res.status(500).json(error.message)
@@ -41,13 +43,15 @@ export const createProject = async (req: CustomRequest, res: Response, next: Nex
       description,
       priority,
       deadline,
-      status
+      status,
+      categoryIds
     }: {
       name: string
       description: string
       priority: string
       deadline: string
       status: number
+      categoryIds: number[]
     } = req.body
     const project = await prisma.projects.create({
       data: {
@@ -59,7 +63,15 @@ export const createProject = async (req: CustomRequest, res: Response, next: Nex
         deadline
       }
     })
-    res.status(200).json(project)
+    const projectCategories = categoryIds.map((categoryId) => ({
+      project_id: project.id,
+      category_id: categoryId
+    }))
+
+    await prisma.project_Categories.createMany({
+      data: projectCategories
+    })
+    res.status(200).json({ msg: 'Project created successfully' })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
