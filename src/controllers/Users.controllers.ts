@@ -9,7 +9,6 @@ import { passwordCheck, emailCheck, usernameCheck } from '../helpers/Utils'
 import type { MvFunction } from '../helpers/main.type'
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from '../helpers/jwtConfig'
 
-
 const prisma = new PrismaClient()
 interface CustomRequest extends Request {
   userId: string
@@ -210,7 +209,6 @@ export const updateUserPassword = async (req: CustomRequest, res: Response, next
   }
 }
 
-
 export const updateProfileImages = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const user: null | {
@@ -271,7 +269,6 @@ export const updateProfileImages = async (req: CustomRequest, res: Response, nex
     console.log(error)
   }
 }
-
 
 export const deleteUser = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
