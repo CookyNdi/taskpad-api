@@ -28,28 +28,28 @@ route.get(
 route.post('/api/project', authentication as unknown as any, createProject as unknown as any)
 
 route.patch(
-  '/api/project/edit/name',
+  '/api/project/edit/name/:id',
   authentication as unknown as any,
   authorization as unknown as any,
   updateProjectName as unknown as any
 )
 
 route.patch(
-  '/api/project/edit/description',
+  '/api/project/edit/description/:id',
   authentication as unknown as any,
   authorization as unknown as any,
   updateProjectDescription as unknown as any
 )
 
 route.patch(
-  '/api/project/edit/priority',
+  '/api/project/edit/priority/:id',
   authentication as unknown as any,
   authorization as unknown as any,
   updateProjectPriority as unknown as any
 )
 
 route.patch(
-  '/api/project/edit/deadline',
+  '/api/project/edit/deadline/:id',
   authentication as unknown as any,
   authorization as unknown as any,
   updateProjectDeadline as unknown as any
