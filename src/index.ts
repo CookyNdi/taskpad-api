@@ -11,7 +11,12 @@ const PORT: string = process.env.PORT ?? '5000'
 
 app.use(fileUpload())
 app.use(express.static('./public'))
-
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+)
+app.use(express.json())
 app.use(cookieParser())
 
 app.use('/health', (req: Request, res: Response, next: NextFunction) => {

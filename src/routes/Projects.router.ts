@@ -17,7 +17,6 @@ const route = express.Router()
 route.get(
   '/api/projects',
   authentication as unknown as any,
-  authorization as unknown as any,
   getProjects as unknown as any
 )
 route.get(
@@ -57,7 +56,7 @@ route.patch(
 )
 
 route.delete(
-  '/api/project',
+  '/api/project/:id',
   authentication as unknown as any,
   authorization as unknown as any,
   deleteProject as unknown as any

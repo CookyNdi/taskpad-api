@@ -46,7 +46,7 @@ export const authorization = async (req: CustomRequest, res: Response, next: Nex
   const projectSelected = req.params.id
   const project = await prisma.projects.findUnique({ where: { id: projectSelected } })
   if (project == null) {
-    return res.status(404).json({ msg: 'Not Found' })
+    return res.status(404).json({ msg: 'Project Not Found' })
   }
   if (project.user_id === payload.message) {
     req.projectId = project.id

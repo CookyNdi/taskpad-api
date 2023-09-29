@@ -10,8 +10,19 @@ interface CustomRequest extends Request {
 export const getProjects = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const projects = await prisma.projects.findMany({ where: { user_id: req.userId } })
-    const categories = await prisma.project_Categories.findMany({ where: { project_id: req.projectId } })
-    res.status(200).json({ project: projects, category: categories })
+    const datas = await Promise.all(
+      projects.map(async (project) => {
+        const projectCategories = await prisma.project_Categories.findMany({
+          where: { project_id: project.id }
+        })
+        const categoryIds = projectCategories.map((projectCategories) => projectCategories.category_id)
+        const categories = await prisma.categories.findMany({
+          where: { id: { in: categoryIds } }
+        })
+        return { projects: project, category: categories }
+      })
+    )
+    res.status(200).json({ datas })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
@@ -28,8 +39,12 @@ export const getProjectById = async (req: CustomRequest, res: Response, next: Ne
     if (project == null) {
       res.status(404).json({ message: 'Project not found' })
     } else {
-      const categories = await prisma.project_Categories.findMany({ where: { project_id: req.projectId } })
-      res.status(200).json({ project, category: categories })
+      const projectCategories = await prisma.project_Categories.findMany({ where: { project_id: req.projectId } })
+      const categoryIds = projectCategories.map((projectCategories) => projectCategories.category_id)
+      const categories = await prisma.categories.findMany({
+        where: { id: { in: categoryIds } }
+      })
+      res.status(200).json({ data: { project, category: categories } })
     }
   } catch (error: any) {
     res.status(500).json(error.message)
@@ -56,7 +71,7 @@ export const createProject = async (req: CustomRequest, res: Response, next: Nex
     const project = await prisma.projects.create({
       data: {
         user_id: req.userId,
-        status_id: status,
+        status_id: Number(status),
         name,
         description,
         priority,
