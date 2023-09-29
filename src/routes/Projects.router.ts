@@ -6,6 +6,7 @@ import {
   deleteProject,
   getProjectById,
   getProjects,
+  updateProjectCategories,
   updateProjectDeadline,
   updateProjectDescription,
   updateProjectName,
@@ -53,6 +54,13 @@ route.patch(
   authentication as unknown as any,
   authorization as unknown as any,
   updateProjectDeadline as unknown as any
+)
+
+route.patch(
+  '/api/project/edit/categories/:id',
+  authentication as unknown as any,
+  authorization as unknown as any,
+  updateProjectCategories as unknown as any
 )
 
 route.delete(

@@ -143,6 +143,22 @@ export const updateProjectPriority = async (req: CustomRequest, res: Response, n
   }
 }
 
+export const updateProjectCategories = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
+  try {
+    const { categoryIds }: { categoryIds: number[] } = req.body
+    await prisma.project_Categories.deleteMany({ where: { project_id: req.projectId } })
+    const projectCategories = categoryIds.map((categoryId) => ({
+      project_id: req.projectId,
+      category_id: categoryId
+    }))
+    await prisma.project_Categories.createMany({
+      data: projectCategories
+    })
+    return res.status(200).json({ msg: 'Project updated successfully' })
+  } catch (error: any) {
+    return res.status(500).json({ msg: error.message })
+  }
+}
 export const updateProjectDeadline = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const { deadline }: { deadline: string } = req.body
