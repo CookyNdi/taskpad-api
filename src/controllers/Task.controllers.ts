@@ -74,15 +74,11 @@ export const updateTaskStatus = async (req: CustomRequest, res: Response, next: 
 
 export const deleteTask = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const task = await prisma.task.delete({
+    await prisma.task.delete({
       where: {
-        id: req.taskId,
-        project_id: req.projectId
+        id: req.taskId
       }
     })
-    if (task == null) {
-      return res.status(404).json({ message: 'Task not found' })
-    }
     res.status(200).json({ msg: 'Task deleted successfully' })
   } catch (error: any) {
     res.status(500).json({ msg: error.message })

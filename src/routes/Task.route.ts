@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { authentication, projectAuthor, taskAuthor } from '../helpers/middleware'
-import { createTask, getTaskById, updateTaskStatus, updateTaskTitle } from '../controllers/Task.controllers'
+import { authentication, taskAuthor } from '../helpers/middleware'
+import { createTask, deleteTask, getTaskById, updateTaskStatus, updateTaskTitle } from '../controllers/Task.controllers'
 
 const route = express.Router()
 
@@ -27,8 +27,8 @@ route.patch(
 route.delete(
   '/api/task/delete/:id',
   authentication as unknown as any,
-  projectAuthor as unknown as any,
-  updateTaskStatus as unknown as any
+  taskAuthor as unknown as any,
+  deleteTask as unknown as any
 )
 
 export default route
