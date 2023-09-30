@@ -8,15 +8,6 @@ interface CustomRequest extends Request {
   taskId: string
 }
 
-export const getTasks = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
-  try {
-    const tasks = await prisma.task.findMany({ where: { project_id: req.projectId } })
-    res.status(200).json(tasks)
-  } catch (error: any) {
-    res.status(500).json(error.message)
-  }
-}
-
 export const getTaskById = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const task = await prisma.task.findUnique({

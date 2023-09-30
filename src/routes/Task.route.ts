@@ -1,11 +1,10 @@
 import express from 'express'
 
 import { authentication, projectAuthor, taskAuthor } from '../helpers/middleware'
-import { createTask, getTaskById, getTasks, updateTaskStatus, updateTaskTitle } from '../controllers/Task.controllers'
+import { createTask, getTaskById, updateTaskStatus, updateTaskTitle } from '../controllers/Task.controllers'
 
 const route = express.Router()
 
-route.get('/api/tasks', authentication as unknown as any, projectAuthor as unknown as any, getTasks as unknown as any)
 route.get(
   '/api/task/:id',
   authentication as unknown as any,
