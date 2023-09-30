@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { authentication, authorization } from '../helpers/middleware'
+import { authentication, authorization, taskAuthor } from '../helpers/middleware'
 import { createTask, getTaskById, getTasks, updateTaskStatus, updateTaskTitle } from '../controllers/Task.controllers'
 
 const route = express.Router()
@@ -12,11 +12,11 @@ route.get(
   authorization as unknown as any,
   getTaskById as unknown as any
 )
-route.post('/api/task', authentication as unknown as any, authorization as unknown as any, createTask as unknown as any)
+route.post('/api/task', authentication as unknown as any, createTask as unknown as any)
 route.patch(
   '/api/task/update/title/:id',
   authentication as unknown as any,
-  authorization as unknown as any,
+  taskAuthor as unknown as any,
   updateTaskTitle as unknown as any
 )
 route.patch(
@@ -26,8 +26,10 @@ route.patch(
   updateTaskStatus as unknown as any
 )
 route.delete(
-  '/api/task/delete',
+  '/api/task/delete/:id',
   authentication as unknown as any,
   authorization as unknown as any,
   updateTaskStatus as unknown as any
 )
+
+export default route
