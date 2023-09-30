@@ -61,7 +61,6 @@ export const updateTaskTitle = async (req: CustomRequest, res: Response, next: N
 export const updateTaskStatus = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const { status }: { status: number } = req.body
-    console.log(status)
     await prisma.task.update({
       where: { id: req.taskId },
       data: { status_id: status }
