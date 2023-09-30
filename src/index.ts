@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import userRoute from './routes/Users.route'
 import projectRoute from './routes/Projects.router'
+import taskRoute from './routes/Task.route'
 dotenv.config()
 
 const app: Application = express()
@@ -25,6 +26,7 @@ app.use('/health', (req: Request, res: Response, next: NextFunction) => {
 
 app.use(userRoute)
 app.use(projectRoute)
+app.use(taskRoute)
 
 app.listen(PORT, () => {
   console.log(`Server Up And Running At http://localhost:${PORT}`)
