@@ -21,7 +21,7 @@ route.patch(
 route.patch(
   '/api/task/update/status/:id',
   authentication as unknown as any,
-  projectAuthor as unknown as any,
+  taskAuthor as unknown as any,
   updateTaskStatus as unknown as any
 )
 route.delete(

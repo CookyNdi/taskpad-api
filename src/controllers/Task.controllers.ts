@@ -61,12 +61,9 @@ export const updateTaskTitle = async (req: CustomRequest, res: Response, next: N
 export const updateTaskStatus = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const { status }: { status: number } = req.body
-    const task: null | { id: string } = await prisma.task.findUnique({ where: { id: req.taskId } })
-    if (task == null) {
-      return res.status(404).json({ msg: 'Task not found' })
-    }
+    console.log(status)
     await prisma.task.update({
-      where: { id: task.id },
+      where: { id: req.taskId },
       data: { status_id: status }
     })
     return res.status(200).json({ msg: 'Task updated successfully' })
