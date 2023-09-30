@@ -42,16 +42,18 @@ model Status {
   id       Int        @id @default(autoincrement())
   title    String
   Projects Projects[]
+  Task     Task[]
 }
 
 model Task {
   id         String   @id @default(cuid())
   project_id String
+  status_id  Int
   title      String
-  status     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   project    Projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  status     Status   @relation(fields: [status_id], references: [id], onDelete: NoAction)
 }
 
 model Project_Categories {

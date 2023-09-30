@@ -265,8 +265,8 @@ export const updateProfileImages = async (req: CustomRequest, res: Response, nex
     } else {
       return res.status(400).json({ msg: 'Please upload a file' })
     }
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    res.status(500).json({ msg: error.message })
   }
 }
 
@@ -327,7 +327,6 @@ export const login = async (req: CustomRequest, res: Response, next: NextFunctio
 
 export const token = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   const refreshToken: string | null = req.cookies.refresh_token
-  console.log(refreshToken)
   if (refreshToken == null) {
     return res.status(401).json({ msg: 'Please Login First!!' })
   }
@@ -337,8 +336,6 @@ export const token = async (req: CustomRequest, res: Response, next: NextFunctio
       maxAge: 1200,
       httpOnly: true
     })
-  } else {
-    console.log(accessToken.message)
   }
   res.status(200).json({ msg: 'Token Renewed' })
 }
