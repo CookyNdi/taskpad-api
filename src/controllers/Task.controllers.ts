@@ -38,17 +38,19 @@ export const getTaskById = async (req: CustomRequest, res: Response, next: NextF
 export const createTask = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const {
+      projectId,
       title,
-      status
+      statusId
     }: {
+      projectId: string
       title: string
-      status: string
+      statusId: number
     } = req.body
     await prisma.task.create({
       data: {
-        project_id: req.projectId,
-        title,
-        status
+        project_id: projectId,
+        status_id: statusId,
+        title
       }
     })
     res.status(200).json({ msg: 'Task created successfully' })
@@ -60,12 +62,8 @@ export const createTask = async (req: CustomRequest, res: Response, next: NextFu
 export const updateTaskTitle = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
     const { title }: { title: string } = req.body
-    const task: null | { id: string } = await prisma.task.findUnique({ where: { id: req.taskId } })
-    if (task == null) {
-      return res.status(404).json({ msg: 'Task not found' })
-    }
     await prisma.task.update({
-      where: { id: task.id },
+      where: { id: req.taskId },
       data: { title }
     })
     return res.status(200).json({ msg: 'Task updated successfully' })
@@ -76,14 +74,14 @@ export const updateTaskTitle = async (req: CustomRequest, res: Response, next: N
 
 export const updateTaskStatus = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { status }: { status: string } = req.body
+    const { status }: { status: number } = req.body
     const task: null | { id: string } = await prisma.task.findUnique({ where: { id: req.taskId } })
     if (task == null) {
       return res.status(404).json({ msg: 'Task not found' })
     }
     await prisma.task.update({
       where: { id: task.id },
-      data: { status }
+      data: { status_id: status }
     })
     return res.status(200).json({ msg: 'Task updated successfully' })
   } catch (error: any) {
