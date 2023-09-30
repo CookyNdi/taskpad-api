@@ -12,15 +12,10 @@ export const getTaskById = async (req: CustomRequest, res: Response, next: NextF
   try {
     const task = await prisma.task.findUnique({
       where: {
-        id: req.taskId,
-        project_id: req.projectId
+        id: req.taskId
       }
     })
-    if (task == null) {
-      res.status(404).json({ message: 'Task not found' })
-    } else {
-      res.status(200).json({ task })
-    }
+    res.status(200).json({ task })
   } catch (error: any) {
     res.status(500).json(error.message)
   }

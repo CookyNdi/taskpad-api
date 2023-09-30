@@ -8,7 +8,7 @@ const route = express.Router()
 route.get(
   '/api/task/:id',
   authentication as unknown as any,
-  projectAuthor as unknown as any,
+  taskAuthor as unknown as any,
   getTaskById as unknown as any
 )
 route.post('/api/task', authentication as unknown as any, createTask as unknown as any)
