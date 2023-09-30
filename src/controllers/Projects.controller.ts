@@ -19,7 +19,8 @@ export const getProjects = async (req: CustomRequest, res: Response, next: NextF
         const categories = await prisma.categories.findMany({
           where: { id: { in: categoryIds } }
         })
-        return { projects: project, category: categories }
+        const tasks = await prisma.task.findMany({ where: { project_id: project.id } })
+        return { projects: project, category: categories, task: tasks }
       })
     )
     res.status(200).json({ datas })
