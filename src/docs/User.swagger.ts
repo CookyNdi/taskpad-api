@@ -519,3 +519,58 @@
  *                   description: A message indicating the user has been logged out.
  *
  */
+
+/**
+ * @swagger
+ * /api/user/delete:
+ *   delete:
+ *     summary: Delete user account
+ *     tags: [Projects]
+ *     description: Delete the authenticated user's account.
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: User's password for verification
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   description: A message indicating success
+ *                   example: Account deleted successfully
+ *       400:
+ *         description: Incorrect password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   description: A message indicating an error
+ *                   example: The password you entered is incorrect
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   description: A message indicating an error
+ *                   example: Internal server error
+ */

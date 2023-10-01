@@ -478,7 +478,7 @@
 
 /**
  * @swagger
- * /api/project/{id}:
+ * /api/project/delete/{id}:
  *   delete:
  *     summary: Delete a project by its ID
  *     tags: [Projects]
