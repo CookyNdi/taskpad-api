@@ -272,12 +272,20 @@ export const updateProfileImages = async (req: CustomRequest, res: Response, nex
 
 export const deleteUser = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const user = await prisma.users.delete({
+    const { password }: { password: string } = req.body
+    const user = await prisma.users.findUnique({
       where: { id: req.userId }
     })
     if (user == null) {
       return res.status(404).json({ message: 'User not found' })
     }
+    const passwordMatch = await argon2.verify(user.password, password)
+    if (!passwordMatch) {
+      return res.status(400).json({ msg: 'The password you entered is incorrect' })
+    }
+    await prisma.users.delete({
+      where: { id: user.id }
+    })
     res.status(200).json({ msg: 'Account deleted successfully' })
   } catch (error: any) {
     res.status(500).json({ msg: error.message })
