@@ -35,7 +35,7 @@ export const getUsers = async (req: CustomRequest, res: Response, next: NextFunc
 
 export const getUserById = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const users = await prisma.users.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id: req.userId },
       select: {
         id: true,
@@ -46,7 +46,7 @@ export const getUserById = async (req: CustomRequest, res: Response, next: NextF
         updatedAt: true
       }
     })
-    res.status(200).json(users)
+    res.status(200).json({ user })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
