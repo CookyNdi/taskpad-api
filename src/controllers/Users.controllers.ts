@@ -27,7 +27,7 @@ export const getUsers = async (req: CustomRequest, res: Response, next: NextFunc
         updatedAt: true
       }
     })
-    res.status(200).json(users)
+    res.status(200).json({ users })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
