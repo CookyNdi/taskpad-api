@@ -60,7 +60,7 @@ route.patch(
 )
 
 route.delete(
-  '/api/project/:id',
+  '/api/project/delete/:id',
   authentication as unknown as any,
   projectAuthor as unknown as any,
   deleteProject as unknown as any

@@ -27,7 +27,7 @@ export const getUsers = async (req: CustomRequest, res: Response, next: NextFunc
         updatedAt: true
       }
     })
-    res.status(200).json(users)
+    res.status(200).json({ users })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
@@ -35,7 +35,7 @@ export const getUsers = async (req: CustomRequest, res: Response, next: NextFunc
 
 export const getUserById = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const users = await prisma.users.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id: req.userId },
       select: {
         id: true,
@@ -46,7 +46,7 @@ export const getUserById = async (req: CustomRequest, res: Response, next: NextF
         updatedAt: true
       }
     })
-    res.status(200).json(users)
+    res.status(200).json({ user })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
@@ -272,12 +272,20 @@ export const updateProfileImages = async (req: CustomRequest, res: Response, nex
 
 export const deleteUser = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const user = await prisma.users.delete({
+    const { password }: { password: string } = req.body
+    const user = await prisma.users.findUnique({
       where: { id: req.userId }
     })
     if (user == null) {
       return res.status(404).json({ message: 'User not found' })
     }
+    const passwordMatch = await argon2.verify(user.password, password)
+    if (!passwordMatch) {
+      return res.status(400).json({ msg: 'The password you entered is incorrect' })
+    }
+    await prisma.users.delete({
+      where: { id: user.id }
+    })
     res.status(200).json({ msg: 'Account deleted successfully' })
   } catch (error: any) {
     res.status(500).json({ msg: error.message })
@@ -305,7 +313,7 @@ export const login = async (req: CustomRequest, res: Response, next: NextFunctio
     const refreshToken = createRefreshToken(user.id)
     // Atur cookie access token
     res.cookie('access_token', accessToken, {
-      maxAge: 1200,
+      maxAge: 1200000,
       httpOnly: true
       // secure: true, // Hanya akan dikirim melalui HTTPS jika true
       // sameSite: "strict", // Atur ke 'lax' atau 'none' sesuai kebutuhan
