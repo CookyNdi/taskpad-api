@@ -305,7 +305,7 @@ export const login = async (req: CustomRequest, res: Response, next: NextFunctio
     const refreshToken = createRefreshToken(user.id)
     // Atur cookie access token
     res.cookie('access_token', accessToken, {
-      maxAge: 1200,
+      maxAge: 1200000,
       httpOnly: true
       // secure: true, // Hanya akan dikirim melalui HTTPS jika true
       // sameSite: "strict", // Atur ke 'lax' atau 'none' sesuai kebutuhan
