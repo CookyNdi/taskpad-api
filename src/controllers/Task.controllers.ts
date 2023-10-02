@@ -30,12 +30,12 @@ export const createTask = async (req: CustomRequest, res: Response, next: NextFu
     }: {
       projectId: string
       title: string
-      statusId: number
+      statusId: string
     } = req.body
     await prisma.task.create({
       data: {
         project_id: projectId,
-        status_id: statusId,
+        status_id: Number(statusId),
         title
       }
     })
