@@ -67,8 +67,9 @@ export const createProject = async (req: CustomRequest, res: Response, next: Nex
       priority: string
       deadline: string
       status: number
-      categoryIds: number[]
+      categoryIds: string
     } = req.body
+    const categories: number[] = categoryIds.split(',').map(Number)
     const project = await prisma.projects.create({
       data: {
         user_id: req.userId,
@@ -79,7 +80,7 @@ export const createProject = async (req: CustomRequest, res: Response, next: Nex
         deadline
       }
     })
-    const projectCategories = categoryIds.map((categoryId) => ({
+    const projectCategories = categories.map((categoryId) => ({
       project_id: project.id,
       category_id: categoryId
     }))
@@ -146,9 +147,10 @@ export const updateProjectPriority = async (req: CustomRequest, res: Response, n
 
 export const updateProjectCategories = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { categoryIds }: { categoryIds: string[] } = req.body
+    const { categoryIds }: { categoryIds: string } = req.body
+    const categories: number[] = categoryIds.split(',').map(Number)
     await prisma.project_Categories.deleteMany({ where: { project_id: req.projectId } })
-    const projectCategories = categoryIds.map((categoryId) => ({
+    const projectCategories = categories.map((categoryId) => ({
       project_id: req.projectId,
       category_id: Number(categoryId)
     }))
