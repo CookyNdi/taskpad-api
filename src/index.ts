@@ -39,7 +39,6 @@ const specs = swaggerJSDoc(options)
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }))
 
 app.get('/', (req, res) => {
-  // Redirect to the welcome page
   res.redirect('/wellcome')
 })
 
