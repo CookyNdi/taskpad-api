@@ -60,10 +60,10 @@ export const updateTaskTitle = async (req: CustomRequest, res: Response, next: N
 
 export const updateTaskStatus = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { status }: { status: number } = req.body
+    const { status }: { status: string } = req.body
     await prisma.task.update({
       where: { id: req.taskId },
-      data: { status_id: status }
+      data: { status_id: Number(status) }
     })
     return res.status(200).json({ msg: 'Task updated successfully' })
   } catch (error: any) {

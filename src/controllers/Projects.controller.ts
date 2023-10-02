@@ -146,11 +146,11 @@ export const updateProjectPriority = async (req: CustomRequest, res: Response, n
 
 export const updateProjectCategories = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const { categoryIds }: { categoryIds: number[] } = req.body
+    const { categoryIds }: { categoryIds: string[] } = req.body
     await prisma.project_Categories.deleteMany({ where: { project_id: req.projectId } })
     const projectCategories = categoryIds.map((categoryId) => ({
       project_id: req.projectId,
-      category_id: categoryId
+      category_id: Number(categoryId)
     }))
     await prisma.project_Categories.createMany({
       data: projectCategories
