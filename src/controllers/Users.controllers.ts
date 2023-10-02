@@ -341,7 +341,7 @@ export const token = async (req: CustomRequest, res: Response, next: NextFunctio
   const accessToken = verifyRefreshToken(refreshToken)
   if (accessToken.valid) {
     res.cookie('access_token', accessToken.message, {
-      maxAge: 1200,
+      maxAge: 1200000,
       httpOnly: true
     })
   }

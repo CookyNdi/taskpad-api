@@ -525,7 +525,7 @@
  * /api/user/delete:
  *   delete:
  *     summary: Delete user account
- *     tags: [Projects]
+ *     tags: [Users]
  *     description: Delete the authenticated user's account.
  *     security:
  *       - BearerAuth: []
