@@ -23,7 +23,7 @@ route.get(
   isAdmin as unknown as any,
   getCategoryId as unknown as any
 )
-route.post('/api/task', authentication as unknown as any, addCategory as unknown as any)
+route.post('/api/category', authentication as unknown as any, isAdmin as unknown as any, addCategory as unknown as any)
 route.patch(
   '/api/category/:id',
   authentication as unknown as any,
