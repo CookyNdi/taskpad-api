@@ -7,6 +7,7 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import userRoute from './routes/Users.route'
 import projectRoute from './routes/Projects.router'
+import categoryRoute from './routes/Category.router'
 import taskRoute from './routes/Task.route'
 import { htmlResponse } from './helpers/htmlResponse'
 dotenv.config()
@@ -53,6 +54,7 @@ app.use('/health', (req: Request, res: Response, next: NextFunction) => {
 app.use(userRoute)
 app.use(projectRoute)
 app.use(taskRoute)
+app.use(categoryRoute)
 
 app.listen(PORT, () => {
   console.log(`Server Up And Running At http://localhost:${PORT}`)
