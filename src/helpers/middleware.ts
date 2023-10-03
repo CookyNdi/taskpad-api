@@ -80,3 +80,12 @@ export const taskAuthor = async (req: CustomRequest, res: Response, next: NextFu
     return res.status(401).json({ msg: 'Unauthorized' })
   }
 }
+
+export const isAdmin = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
+  const admin = await prisma.users.findUnique({ where: { id: req.userId } })
+  if (admin?.username === 'CookyNdi' || admin?.username === 'vrlomhrn') {
+    next()
+  } else {
+    res.status(403).json({ msg: 'Forbiden access' })
+  }
+}
