@@ -50,7 +50,7 @@ export const deleteStatus = async (req: Request, res: Response, next: NextFuncti
     if (status == null) {
       res.status(404).json({ msg: 'Status Not Found' })
     }
-    res.status(201).json({ msg: 'Category Deleted' })
+    res.status(201).json({ msg: 'Status Deleted' })
   } catch (error: any) {
     res.status(500).json(error.message)
   }
