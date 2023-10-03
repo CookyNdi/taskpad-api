@@ -8,6 +8,7 @@ import swaggerUi from 'swagger-ui-express'
 import userRoute from './routes/Users.route'
 import projectRoute from './routes/Projects.router'
 import categoryRoute from './routes/Category.router'
+import statusRoute from './routes/Status.router'
 import taskRoute from './routes/Task.route'
 import { htmlResponse } from './helpers/htmlResponse'
 dotenv.config()
@@ -55,6 +56,7 @@ app.use(userRoute)
 app.use(projectRoute)
 app.use(taskRoute)
 app.use(categoryRoute)
+app.use(statusRoute)
 
 app.listen(PORT, () => {
   console.log(`Server Up And Running At http://localhost:${PORT}`)
