@@ -313,18 +313,18 @@ export const login = async (req: CustomRequest, res: Response, next: NextFunctio
     const refreshToken = createRefreshToken(user.id)
     // Atur cookie access token
     res.cookie('access_token', accessToken, {
-      maxAge: 1200000,
-      httpOnly: true
-      // secure: true, // Hanya akan dikirim melalui HTTPS jika true
-      // sameSite: "strict", // Atur ke 'lax' atau 'none' sesuai kebutuhan
+      maxAge: 86400000,
+      // httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
     })
 
     // Atur cookie refresh token
     res.cookie('refresh_token', refreshToken, {
       maxAge: 604800000,
-      httpOnly: true
-      // secure: true,
-      // sameSite: "strict",
+      // httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
     })
 
     res.status(200).json({ msg: 'Login Successfully' })
@@ -340,9 +340,17 @@ export const token = async (req: CustomRequest, res: Response, next: NextFunctio
   }
   const accessToken = verifyRefreshToken(refreshToken)
   if (accessToken.valid) {
-    res.cookie('access_token', accessToken.message, {
-      maxAge: 1200000,
-      httpOnly: true
+    res.cookie('access_token', accessToken.message[0], {
+      maxAge: 86400000,
+      // httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    })
+    res.cookie('refresh_token', accessToken.message[1], {
+      maxAge: 604800000,
+      // httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
     })
   }
   res.status(200).json({ msg: 'Token Renewed' })
