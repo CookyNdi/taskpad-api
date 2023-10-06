@@ -29,7 +29,12 @@ const PORT: string = process.env.PORT ?? '5000'
 
 app.use(fileUpload())
 app.use(express.static('./public'))
-app.use(cors())
+app.use(
+  cors({
+    credentials: true,
+    origin: 'http://localhost:5173'
+  })
+)
 app.use(
   express.urlencoded({
     extended: true
