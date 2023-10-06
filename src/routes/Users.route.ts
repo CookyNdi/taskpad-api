@@ -12,7 +12,7 @@ import {
   updateUsername,
   userRegistration
 } from '../controllers/Users.controllers'
-import { authentication } from '../helpers/middleware'
+import { authentication, isAdminLogin } from '../helpers/middleware'
 
 const route = express.Router()
 
@@ -21,6 +21,7 @@ route.get('/api/user', authentication as unknown as any, getUserById as unknown 
 
 route.post('/api/registration', userRegistration as unknown as any)
 route.post('/api/login', login as unknown as any)
+route.post('/api/admin/login', isAdminLogin as unknown as any, login as unknown as any)
 route.get('/api/token', token as unknown as any)
 route.delete('/api/logout', logout as unknown as any)
 

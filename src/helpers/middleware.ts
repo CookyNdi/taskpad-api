@@ -78,6 +78,15 @@ export const taskAuthor = async (req: CustomRequest, res: Response, next: NextFu
   }
 }
 
+export const isAdminLogin = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
+  const { username } = req.body
+  if (username === 'CookyNdi' || username === 'vrlomhrn') {
+    next()
+  } else {
+    res.status(403).json({ msg: 'Forbiden access' })
+  }
+}
+
 export const isAdmin = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
   const admin = await prisma.users.findUnique({ where: { id: req.userId } })
   if (admin?.username === 'CookyNdi' || admin?.username === 'vrlomhrn') {
