@@ -10,8 +10,7 @@ interface CustomRequest extends Request {
 }
 
 export const authentication = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
-  const accessTokenBearer: string | null = req.header('Authorization') ?? null
-  const accessToken = accessTokenBearer?.replace(/^Bearer /, '')
+  const accessToken = req.cookies.access_token
   if (accessToken == null) {
     return res.status(401).json({ msg: 'Please Login First!!' })
   }
@@ -35,8 +34,7 @@ export const authentication = async (req: CustomRequest, res: Response, next: Ne
 }
 
 export const projectAuthor = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
-  const accessTokenBearer: string | null = req.header('Authorization') ?? null
-  const accessToken = accessTokenBearer?.replace(/^Bearer /, '')
+  const accessToken = req.cookies.access_token
   if (accessToken == null) {
     return res.status(401).json({ msg: 'Please Login First!!' })
   }
@@ -58,8 +56,7 @@ export const projectAuthor = async (req: CustomRequest, res: Response, next: Nex
 }
 
 export const taskAuthor = async (req: CustomRequest, res: Response, next: NextFunction): Promise<any> => {
-  const accessTokenBearer: string | null = req.header('Authorization') ?? null
-  const accessToken = accessTokenBearer?.replace(/^Bearer /, '')
+  const accessToken = req.cookies.access_token
   if (accessToken == null) {
     return res.status(401).json({ msg: 'Please Login First!!' })
   }
